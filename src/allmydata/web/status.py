@@ -3,6 +3,8 @@ import time, pprint, itertools
 import simplejson
 from twisted.internet import defer
 from nevow import rend, inevow, tags as T
+from nevow.static import File
+from nevow.util import resource_filename
 from allmydata.util import base32, idlib
 from allmydata.web.common import getxmlfile, get_arg, \
      abbreviate_time, abbreviate_rate, abbreviate_size, plural, compute_rate
@@ -340,6 +342,9 @@ class DownloadStatusPage(DownloadResultsRendererMixin, rend.Page):
 
     def child_timeline(self, ctx):
         return DownloadStatusTimelinePage(self.download_status)
+
+    def child_timeline2(self, ctx):
+        return File(resource_filename('allmydata.web', 'download-status-timeline2.xhtml'))
 
     def download_results(self):
         return defer.maybeDeferred(self.download_status.get_results)
