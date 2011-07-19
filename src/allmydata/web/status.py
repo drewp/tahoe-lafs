@@ -444,6 +444,14 @@ class DownloadStatusPage(DownloadResultsRendererMixin, rend.Page):
         data = { } # this will be returned to the GET
         ds = self.download_status
 
+        data.update(dict(
+            started=ds.get_started(),
+            storage_index=base32.b2a_or_none(ds.get_storage_index()),
+            helper=ds.using_helper(),
+            total_size=ds.get_size(),
+            progress=ds.get_progress(),
+            status=ds.get_status()))
+        
         data["read"] = self._find_overlap(ds.read_events,
                                           "start_time", "finish_time")
         data["segment"] = self._find_overlap(ds.segment_events,
@@ -643,6 +651,8 @@ class DownloadStatusPage(DownloadResultsRendererMixin, rend.Page):
 class DownloadStatusTimelinePage(rend.Page):
     docFactory = getxmlfile("download-status-timeline.xhtml")
 
+    # all these can go away if the page starts using its json data to
+    # fill in those fields
     def render_started(self, ctx, data):
         TIME_FORMAT = "%H:%M:%S %d-%b-%Y"
         started_s = time.strftime(TIME_FORMAT,
